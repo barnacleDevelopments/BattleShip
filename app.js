@@ -10,7 +10,6 @@ File: app.js
 const readlineSync = require("readline-sync");
 const fs = require("fs");
 
-
 /**
  *
  * @param {string} filePath the file path location of the text file.
@@ -39,17 +38,45 @@ class BattleGround {
         this.hitList = [];
     }
 
+    /**
+     * 
+     * @param {string} y the y axis coordinates 
+     * @param {string} x the x axis coordinates 
+     */
+    checkHitList(y, x) {
+        let hasHit = false;
+        this.hitList.forEach(hit => {
+            if(hit.y === y && hit.x === x) {
+                hasHit = true
+            }
+        });
+        return hasHit
+    }
+
+    /**
+     * 
+     * @param {string} text formated battleship map. 
+     * @description formats text formated battleship text into 2 dimensional array. 
+     */
     setMap(text) {
         let map = text.split("\n")
+        // two dimensional array
         map = map.map(row => {
             let strRow = row.split(",");
-            return (strRow.map(str => parseInt(str)))
-
-        })
+            return (strRow.map(str => parseInt(str)));
+        });
         this.rows = map
+        // display map array
+        this.displayRows = this.rows.map((row, index) => )
+        
         return map
     }
 
+    /**
+     * 
+     * @param {text} text formated battleship map. 
+     * @description counts the number of ship hit spots on th battleship map. 
+     */
     setHitSpots(text) {
         for(let i = 0; i < text.length; i++) {
             console.log()
@@ -59,6 +86,13 @@ class BattleGround {
         }
     }
 
+    displayMap() {
+
+    }
+
+    /**
+     * @description
+     */
     createColumns() {
         let columns = []
         let column = []
@@ -68,16 +102,14 @@ class BattleGround {
                 column.push(this.rows[i][i])
             }
         }
-  
     }
 
-    createRows(text) {
+    createRows() {
         let rows = [];
         for(let i = 0; i < this.rows.length; i++) {
             this["row" + (i + 1)] = this.rows[i]
         }
     }
-
 }
 
 const isX = (x) => {
@@ -90,20 +122,28 @@ const isX = (x) => {
    }
 }
 
-
-
+/**
+ * 
+ * @param {object} map a class object of the batlleship map.  
+ */
 const initializeGame = (map) => {
     let missiles = 30
     let y, x, hits, gameWon = false, gameOver = true, nukeProgress = 0
 
+    /**
+     * @description launches missile a specified coordinates.
+     */
     const launchMissile = () => {
         missiles --
         if(map["row" + (x)][y] === 1) {
-            console.log(`HIT!\nYou have ${missiles} remaining`)
-            map.hitList.push({y:y, x:x})
-            console.log(map.hitList)
-            map.currentHitSpots++
-            nukeProgress ++
+            if(map.checkHitList(y, x)) {
+                console.log(`HIT! You have previously hit this ship\nYou have ${missiles} remaining`)
+            } else {
+                console.log(`HIT!\nYou have ${missiles} remaining`)
+                map.hitList.push({y:y, x:x})
+                map.currentHitSpots++
+                nukeProgress ++
+            }
         } else {
             console.log(`MISS!\nYou have ${missiles} remaining`)
             nukeProgress = 0
@@ -113,7 +153,11 @@ const initializeGame = (map) => {
     const launchNuke = () => {
 
     }
-
+    /**
+     * 
+     * @param {func} func callback function to be executed once coordiates are aquired. 
+     * @description prompts users for coordinates.
+     */
     const askCoordinates = (func) => {
         let coords = readlineSync.question("Choose your target (Ex. A1): ");
         let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j"]
@@ -134,6 +178,7 @@ const initializeGame = (map) => {
 
     }
    
+    // loop coordinate question until rockets are depleted || game ended
     while(missiles > 0 && gameOver) {
         if(map.currentHitSpots === map.totalHitSpots && map.currentHitSpots !== 0) {
             gameOver = false;
@@ -148,6 +193,9 @@ const initializeGame = (map) => {
     }
 
     return {
+        /**
+         * @description returns the current game report.
+         */
         getGameScore: () => {
             if(gameWon) {
                 return `You had ${map.currentHitSpots} of ${map.totalHitSpots},
@@ -156,15 +204,11 @@ const initializeGame = (map) => {
                 return `You had ${map.currentHitSpots} of ${map.totalHitSpots},
                 which didn't sink all the ships.\nStraighten up soldier!`
             }
-       
         }
     }
-
 }
 
-
-
-// log output
+// logs output
 processTextFile("map.txt", (contents) => {
     let map = new BattleGround(contents)
     let game = initializeGame(map);
