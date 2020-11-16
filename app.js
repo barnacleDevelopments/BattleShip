@@ -29,13 +29,16 @@ const processTextFile = (filePath, func) => {
 class BattleGround {
     constructor(text) {
         this.setMap(text)
+    
         this.setHitSpots(text)
         this.rows 
         this.columns
         this.createRows()
         this.totalHitSpots = 0;
         this.currentHitSpots = 0;
-        this.hitList = [];
+        this.hitList = [{y: 2, x: 4}];
+        this.displayRows
+        this.setDisplayMap()
     }
 
     /**
@@ -59,17 +62,13 @@ class BattleGround {
      * @description formats text formated battleship text into 2 dimensional array. 
      */
     setMap(text) {
-        let map = text.split("\n")
         // two dimensional array
-        map = map.map(row => {
-            let strRow = row.split(",");
-            return (strRow.map(str => parseInt(str)));
+        this.rows = text.split("\n").map(row => {
+            let strRow = row.split(",").map(str => parseInt(str));
+            return strRow
         });
-        this.rows = map
-        // display map array
-        this.displayRows = this.rows.map((row, index) => )
-        
-        return map
+
+       
     }
 
     /**
@@ -79,15 +78,29 @@ class BattleGround {
      */
     setHitSpots(text) {
         for(let i = 0; i < text.length; i++) {
-            console.log()
             if(text[i] === "1") {
                 this.totalHitSpots++
             }
         }
     }
 
-    displayMap() {
-
+    setDisplayMap() {
+        let displayMap = ``
+        let rowFormated = ``
+        console.log("  A B C D E F G H I J")
+        this.rows.forEach((row, i) => {
+            row.forEach((spot, i) => {
+                this.hitList.forEach(hit => {
+                    console.log(spot, i)
+                    console.log(hit.y, i)
+                    if(spot === i) {
+                        console.log("hit logged")
+                        // displayMap = displayMap.concat(`${i} ${row.toString()}\n`);
+                    }
+                })
+            });
+        });
+        console.log(displayMap)
     }
 
     /**
@@ -96,7 +109,6 @@ class BattleGround {
     createColumns() {
         let columns = []
         let column = []
-        console.log(this.rows)
         for(let i = 0; i < this.rows.length; i++) {
             for(let j = 0; j < this.rows[i].length; j++) {
                 column.push(this.rows[i][i])
@@ -105,7 +117,6 @@ class BattleGround {
     }
 
     createRows() {
-        let rows = [];
         for(let i = 0; i < this.rows.length; i++) {
             this["row" + (i + 1)] = this.rows[i]
         }
@@ -129,7 +140,6 @@ const isX = (x) => {
 const initializeGame = (map) => {
     let missiles = 30
     let y, x, hits, gameWon = false, gameOver = true, nukeProgress = 0
-
     /**
      * @description launches missile a specified coordinates.
      */
@@ -150,9 +160,6 @@ const initializeGame = (map) => {
         }
     }
 
-    const launchNuke = () => {
-
-    }
     /**
      * 
      * @param {func} func callback function to be executed once coordiates are aquired. 
@@ -167,16 +174,19 @@ const initializeGame = (map) => {
             func()
         }
     }
+    // const launchNuke = () => {
 
-    const promptNuke = (func) => {
-        let nukeConfirmed = readlineSync.question("Nuke aquired! Fire when ready (type: nuke it) :");
-        if(nukeConfirmed === "nuke it") {
-            func()
-        } else {
-            askCoordinates()
-        }
+    // }
 
-    }
+    // const promptNuke = (func) => {
+    //     let nukeConfirmed = readlineSync.question("Nuke aquired! Fire when ready (type: nuke it) :");
+    //     if(nukeConfirmed === "nuke it") {
+    //         func()
+    //     } else {
+    //         askCoordinates()
+    //     }
+
+    // }
    
     // loop coordinate question until rockets are depleted || game ended
     while(missiles > 0 && gameOver) {
