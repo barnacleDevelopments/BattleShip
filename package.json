@@ -1,0 +1,22 @@
+{
+  "name": "battleship",
+  "version": "1.0.0",
+  "description": "A console battleship game.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barnacleDevelopments/battleship.git"
+  },
+  "author": "Devin Davis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/barnacleDevelopments/battleship/issues"
+  },
+  "homepage": "https://github.com/barnacleDevelopments/battleship#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
